@@ -1,6 +1,7 @@
 // seva-meteor.js
 Tasks = new Mongo.Collection("tasks");
-randomTrivia = new Mongo.Collenction("randomTrivia");
+TriviaCount = new Mongo.Collection("trivaCount");
+PersonalTrivia = new Mongo.Collection("personalTrivia");
 if (Meteor.isClient) {
 	Meteor.subscribe("tasks");
 	Session.setDefault('random_trivia', "no trivia");
@@ -24,7 +25,9 @@ if (Meteor.isClient) {
 	Template.trivia.events({
 		"click .get_trivia": function () {
 			Session.set('counter',Session.get('counter')+1);
-			Session.set('random_trivia',Meteor.call("getTrivia"));
+			var x = Meteor.call("getTrivia");
+			console.log(x);
+			Session.set('random_trivia',x);
 		}
 	});
 	
@@ -138,14 +141,22 @@ Meteor.methods({
 	getTrivia: function () {		
 		this.unblock();
 		try {
-			var result = HTTP.call("GET", "http://45.55.76.36:3555/sevabot/counters?query=%7B%22chat_id%22%3A%22%23j0kur33z33%2F%24612a20053604dfe4%22%7D"
+			var maxresult = HTTP.call("GET", "http://45.55.76.36:3555/sevabot/counters?query=%7B%22chat_id%22%3A%22%23j0kur33z33%2F%24612a20053604dfe4%22%7D"
 			,{params: {limit: 1}}
 			);
+			var max = maxresult.data[0].sequence;
+			console.log(max);
+			var rando = Math.floor((Math.random() * max) + 1)
+			console.log(rando);
+			var newUrl= "http://45.55.76.36:3555/sevabot/trivia?query=%7B%22chat_id%22%3A%22%23j0kur33z33%2F%24612a20053604dfe4%22%2C%22trivia_id%22%3A"+rando+"%7D";
+			console.log(newUrl);
+			var result = HTTP.call("GET", newUrl,{params: {limit: 1}});
+			console.log(result.data[0].info);
 			Tasks.insert({
-					text: result.data[0].sequence,
+					text: result.data[0].info,
 					createdAt: new Date()
 					});
-				return true;
+				return ""+result.data[0].info;
 			} catch (e) {
 				return false;
 			};
