@@ -4,37 +4,23 @@
 </head>
 
 <body>
+	<p>({{trivia_count}})</p>
 	<div class="container">
-		<header>
-			<h1>TRIVIA ({{incompleteCount}})</h1>
-			<!-- add a form below the h1 -->
-			<label class="hide-completed">
-				<input type="checkbox" checked="{{hideCompleted}}" />
-				Hide Completed Tasks
-			</label>			
-			{{> loginButtons}}
-			{{#if currentUser}}
-			<form class="new-task">
-				<input type="text" name="text" placeholder="Type to add new tasks" />
-			</form>
-			{{/if}}
-			
-		</header>
-		
-		{{> trivia}}
-		
-		<ul>
-			{{#each tasks}}
-			{{> task}}
-			{{/each}}
-		</ul>
+		<header>			
+			<div class="trivia-section">
+				{{> trivia}}
+			</div>		
+		</header>	
 	</div>
 </body>
 
 <template name="trivia">
-	<button class="get_trivia">!Trivia</button>
-	<p>Trivia: {{random_trivia}}</p>
-	<p>Counter: {{counter}}</p>
+	<div class="center">
+		<button class="get_trivia"></button>
+	</div>
+	<div class="quoted-trivia-container">
+		<p class="quoted-trivia" align="center">{{random_trivia}}</p>
+	</div>
 </template>
 
 <template name="task">
@@ -53,4 +39,4 @@
 		{{/if}}
 		<span class="text"><strong>{{username}}</strong> - {{text}}</span>
 	</li>
-</template>
+</template>	

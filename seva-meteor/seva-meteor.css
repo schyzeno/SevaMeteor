@@ -21,7 +21,7 @@ body {
   max-width: 600px;
   margin: 0 auto;
   min-height: 100%;
-  background: white;
+  background: transparent;
 }
 
 header {
@@ -67,6 +67,48 @@ ul {
   margin: 0;
   padding: 0;
   background: white;
+}
+
+button.get_trivia{	
+	border-style: none;
+    width: 85px;
+    height: 85px;
+	background-color: transparent;
+	background-image: url(/t_button.png);
+    background-repeat: no-repeat;
+}
+
+button.get_trivia:hover{
+	border-style: none;
+    width: 85px;
+    height: 85px;
+	background-color: transparent;
+	background-image: url(/t_button_mouse_over.png);
+    background-repeat: no-repeat;
+}
+
+.trivia-section{
+	margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.quoted-trivia-container{
+	background: #F1F1F1;
+	word-wrap:break-word;
+}
+
+.quoted-trivia{
+	padding: 10px;
+	font-size:45px
+	font-style:italic;
+	font-weight: bold;
+}
+
+.center{
+	margin: auto;
+    width: 105px;
+	padding: 10px;
 }
 
 .delete {

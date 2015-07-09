@@ -4,8 +4,19 @@ TriviaCount = new Mongo.Collection("trivaCount");
 PersonalTrivia = new Mongo.Collection("personalTrivia");
 if (Meteor.isClient) {
 	Meteor.subscribe("tasks");
-	Session.setDefault('random_trivia', "no trivia");
+	Session.setDefault('random_trivia', "Unable to retrieve trivia");
+	Session.setDefault('trivia_count',0);
 	Session.setDefault('counter', 0);
+	setInterval(function(){ var z = Meteor.call("getTriviaCount",function(err, data){
+				if(err){
+					console.log(err);
+					}
+				else
+				{
+					console.log(data);	
+					Session.set('trivia_count',data);
+				}
+			}); }, 60000);
 	// This code only runs on the client
 	Template.body.helpers({
 		tasks: function () {
@@ -32,9 +43,10 @@ if (Meteor.isClient) {
 				else
 				{
 					console.log(data);	
-					Session.set('random_trivia',data);
+					Session.set('random_trivia',"\""+data+" \"");
 				}
 			});
+			
 			
 		}
 	});
@@ -74,6 +86,9 @@ if (Meteor.isClient) {
 		},
 		incompleteCount: function () {
 			return Tasks.find({checked: {$ne: true}}).count();
+		},
+		trivia_count: function() {
+			return Session.get('trivia_count');
 		}
 	});
 	
@@ -165,6 +180,18 @@ Meteor.methods({
 			return false;
 		};
 		
+	},
+	getTriviaCount: function(){
+		this.unblock();
+		try {
+		var maxresult = HTTP.call("GET", "http://45.55.76.36:3555/sevabot/counters?query=%7B%22chat_id%22%3A%22%23j0kur33z33%2F%24612a20053604dfe4%22%7D"
+			,{params: {limit: 1}}
+			);
+			var max = maxresult.data[0].sequence;
+			return max;
+		} catch (e) {
+			return false;
+		};
 	}
 });
 
