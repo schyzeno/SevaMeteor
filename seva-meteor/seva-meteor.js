@@ -160,10 +160,6 @@ Meteor.methods({
 			console.log(newUrl);
 			var result = HTTP.call("GET", newUrl,{params: {limit: 1}});
 			console.log(result.data[0].info);
-			Tasks.insert({
-				text: result.data[0].info,
-				createdAt: new Date()
-			});
 			return ""+result.data[0].info;
 			} catch (e) {
 			return false;
