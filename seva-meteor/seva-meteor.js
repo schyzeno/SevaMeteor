@@ -25,9 +25,17 @@ if (Meteor.isClient) {
 	Template.trivia.events({
 		"click .get_trivia": function () {
 			Session.set('counter',Session.get('counter')+1);
-			var x = Meteor.call("getTrivia");
-			console.log(x);
-			Session.set('random_trivia',x);
+			var x = Meteor.call("getTrivia", function(err, data){
+				if(err){
+					console.log(err);
+					}
+				else
+				{
+					console.log(data);	
+					Session.set('random_trivia',data);
+				}
+			});
+			
 		}
 	});
 	
@@ -39,11 +47,11 @@ if (Meteor.isClient) {
 			
 			Meteor.call("addTask", text);
 			
-			// Clear form
-			event.target.text.value = "";
-			
-			// Prevent default form submit
-			return false;
+		// Clear form
+		event.target.text.value = "";
+		
+		// Prevent default form submit
+		return false;
 		},
 		"change .hide-completed input": function (event) {
 			Session.set("hideCompleted", event.target.checked);
@@ -153,13 +161,13 @@ Meteor.methods({
 			var result = HTTP.call("GET", newUrl,{params: {limit: 1}});
 			console.log(result.data[0].info);
 			Tasks.insert({
-					text: result.data[0].info,
-					createdAt: new Date()
-					});
-				return ""+result.data[0].info;
+				text: result.data[0].info,
+				createdAt: new Date()
+			});
+			return ""+result.data[0].info;
 			} catch (e) {
-				return false;
-			};
+			return false;
+		};
 		
 	}
 });
