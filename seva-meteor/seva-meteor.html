@@ -4,7 +4,7 @@
 </head>
 
 <body>
-	<p>({{trivia_count}})</p>
+	<p>({{trivia_count}})({{counter}})</p>
 	<div class="container">
 		<header>			
 			<div class="trivia-section">
@@ -19,7 +19,11 @@
 		<button class="get_trivia"></button>
 	</div>
 	<div class="quoted-trivia-container">
-		<p class="quoted-trivia" align="center">{{random_trivia}}</p>
+		{{#if triviaIsURL}}
+		<p class="quoted-trivia" align="center">" <a href="{{random_trivia_first_token}}">{{random_trivia_first_token}}</a>{{random_trivia_remaining_tokens}} "</p>
+		{{else}}
+		<p class="quoted-trivia" align="center">" {{random_trivia}} "</p>		
+		{{/if}}
 	</div>
 </template>
 
