@@ -1,6 +1,7 @@
 // seva-meteor.js
 Tasks = new Mongo.Collection("tasks");
 Counters = new Mongo.Collection("counters");
+Trivia = new Mongo.Collection("trivia");
 TriviaCount = new Mongo.Collection("trivaCount");
 if (Meteor.isClient) {
 	Meteor.subscribe("tasks");
@@ -251,11 +252,38 @@ if (Meteor.isServer) {
 	}, 5000);
 	*/
 	Meteor.setInterval(function(){ 
-			var sourceCounters = HTTP.call("GET", "http://45.55.76.36:3555/sevabot/counters");
+			var sourceCounters = HTTP.call("GET", "http://45.55.76.36:3555/sevabot/counters").data;
 			for(var i = 0; i < sourceCounters.length;i++){
 					var sourceCounter = sourceCounters[i];
-					var sourceCount = Counters.find({"_id":sourceCounter._id}).count();
-					console.log("sourceCounter: "+sourceCounter._id);
+					if(Counters.find({"source_id":sourceCounter._id}).count()>0){
+						console.log("sourceCounter: "+sourceCounter._id);
+					}
+					else{
+						console.log("sourceCounter.chat_id: "+sourceCounter._id);
+						var url = "http://45.55.76.36:3555/sevabot/counters?query=%7B%22chat_id%22%3A%22"+encodeURIComponent(sourceCounter.chat_id)+"%22%7D";
+						console.log("trivia_url: "+url);
+						var sourceTrivia = HTTP.call("GET", url).data;
+						if(sourceTrivia.length>0)
+						{
+							for(var i = 0; i < sourceTrivia.length;i++){
+								var sourceTrivium = sourceTrivia[i];
+								Trivia.insert({
+									source_id: sourceTrivium._id,
+									info: sourceTrivium.info,
+									chat_id: sourceTrivium.chat_id,
+									full_name: sourceTrivium.full_name,
+									date: sourceTrivium.date,
+									trivia_id: sourceTrivium.trivia_id
+								});
+							}
+						}
+						Counters.insert({
+							source_id: sourceCounter._id,
+							chat_id: sourceCounter.chat_id,
+							collection: sourceCounter.collection,
+							sequence: sourceCounter.sequence
+						});
+					}
 				}
 		},5000);
 }
